@@ -19,7 +19,7 @@ public class InvoiceEntity
     @GeneratedValue
     private Long id;
 
-    @OneToOne
+    @ManyToOne()
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
