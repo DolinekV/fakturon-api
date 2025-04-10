@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -32,4 +34,7 @@ public class CustomerEntity {
 
     @Embedded
     public AddressEntity billingAddress;
+
+    @OneToMany(mappedBy = "customer")
+    public List<InvoiceEntity> invoices;
 }

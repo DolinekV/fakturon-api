@@ -35,6 +35,7 @@ public class CustomerMapper {
 
     public Customer toCustomer(CustomerEntity customerEntity) {
         return new Customer(
+                customerEntity.id,
                 customerEntity.name,
                 customerEntity.cin,
                 customerEntity.tin,

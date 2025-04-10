@@ -1,5 +1,6 @@
 package com.dolinek.fakturon.Common.Web.Exception;
 
+import com.dolinek.fakturon.Common.Domain.Exception.EntityNotFoundException;
 import com.dolinek.fakturon.Common.Web.Dto.ErrorResponse;
 import com.dolinek.fakturon.Invoice.Domain.Exception.EmailAlreadyTakenException;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,16 @@ public class GlobalExceptionHandler
         response.put("errors", errors);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> entityNotFound(EntityNotFoundException ex)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Not found",
+                String.format("%s", ex.getMessage())
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
