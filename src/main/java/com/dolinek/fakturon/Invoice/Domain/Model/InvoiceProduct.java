@@ -12,20 +12,20 @@ public class InvoiceProduct {
     private final Double priceWithTax;
     private final Double taxAmount;
 
-    public InvoiceProduct(Long id, Product product, String customName, String customDescription, Double price, Double priceWithTax, Double taxAmount) {
+    public InvoiceProduct(Long id, Product product, String name, String description, Double price, Double priceWithTax, Double taxAmount) {
         this.id = id;
         this.productId = product.getId();
-        this.name = customName;
-        this.description = customDescription;
+        this.name = name;
+        this.description = description;
         this.price = price;
         this.priceWithTax = priceWithTax;
         this.taxAmount = taxAmount;
     }
 
-    public InvoiceProduct(Long id, String customName, String customDescription, Double price, Double priceWithTax, Double taxAmount) {
+    public InvoiceProduct(Long id, String name, String description, Double price, Double priceWithTax, Double taxAmount) {
         this.id = id;
-        this.name = customName;
-        this.description = customDescription;
+        this.name = name;
+        this.description = description;
         this.price = price;
         this.priceWithTax = priceWithTax;
         this.taxAmount = taxAmount;
