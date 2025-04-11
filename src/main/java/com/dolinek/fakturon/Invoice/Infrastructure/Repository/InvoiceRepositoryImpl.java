@@ -8,6 +8,7 @@ import com.dolinek.fakturon.Invoice.Infrastructure.Entity.InvoiceEntity;
 import com.dolinek.fakturon.Invoice.Infrastructure.Entity.InvoiceProductEntity;
 import com.dolinek.fakturon.Invoice.Infrastructure.Entity.ProductEntity;
 import com.dolinek.fakturon.Invoice.Web.Dto.CreateUpdateInvoiceRequest;
+import com.dolinek.fakturon.Invoice.Web.Dto.InvoiceProductDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,17 +26,31 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         CustomerEntity customerEntity = this.customerRepository.findById(request.getCustomerId()).orElseThrow(
                 () -> new EntityNotFoundException("Customer", request.getCustomerId())
         );
+
         List<InvoiceProductEntity> invoiceProductEntities = new ArrayList<>();
 
         InvoiceEntity invoiceEntity = new InvoiceEntity();
 
-        for (Long productId : request.getProductIds()) {
-            ProductEntity productEntity = this.productRepository.findById(productId).orElseThrow(
-                    () -> new EntityNotFoundException("Product", productId)
-            );
-
+        for (InvoiceProductDTO productDTO : request.getProducts()) {
+            ProductEntity productEntity = null;
             InvoiceProductEntity invoiceProductEntity = new InvoiceProductEntity();
-            invoiceProductEntity.setProduct(productEntity);
+
+            if (productDTO.getProductId() != null) {
+                productEntity = this.productRepository.findById(productDTO.getProductId()).orElseThrow(
+                        () -> new EntityNotFoundException("Product", productDTO.getProductId())
+                );
+            } else {
+                invoiceProductEntity.setCustomName(productDTO.getCustomName());
+                invoiceProductEntity.setCustomDescription(productDTO.getCustomDescription());
+                invoiceProductEntity.setCustomPrice(productDTO.getPrice());
+                invoiceProductEntity.setCustomPriceTax(productDTO.getPriceTax());
+                invoiceProductEntity.setCustomTaxAmount(productDTO.getTaxAmount());
+            }
+
+            if (productEntity != null) {
+                invoiceProductEntity.setProduct(productEntity);
+            }
+
             invoiceProductEntity.setInvoice(invoiceEntity);
 
             invoiceProductEntities.add(invoiceProductEntity);
