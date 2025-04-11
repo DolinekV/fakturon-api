@@ -26,6 +26,7 @@ public class InvoiceProductEntity
     private ProductEntity product;
 
     private String customName;
+    private String customDescription;
     private Double customPrice;
     private Double customPriceTax;
     private Double customTaxAmount;

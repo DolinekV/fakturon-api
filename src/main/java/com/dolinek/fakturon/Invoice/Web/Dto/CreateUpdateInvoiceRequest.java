@@ -13,5 +13,5 @@ public class CreateUpdateInvoiceRequest {
     @NotNull
     private Long customerId;
 
-    private List<Long> productIds = new ArrayList<>();
+    private List<InvoiceProductDTO> products = new ArrayList<>();
 }
