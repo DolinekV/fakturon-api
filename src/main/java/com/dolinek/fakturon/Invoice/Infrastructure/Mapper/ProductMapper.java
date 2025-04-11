@@ -37,6 +37,18 @@ public class ProductMapper
         );
     }
 
+    public Product toProductFromCustom(String name, String description, Double price, Double priceTax, Double taxAmount)
+    {
+        return new Product(
+                null,
+                name,
+                description,
+                price,
+                priceTax,
+                taxAmount
+        );
+    }
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public void updateProductFromDto(CreateUpdateProductRequest request, @MappingTarget ProductEntity product)
     {}

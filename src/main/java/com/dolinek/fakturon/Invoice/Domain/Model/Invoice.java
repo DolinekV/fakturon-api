@@ -11,11 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Invoice
 {
-    private String id;
+    private Long id;
     private Customer customer;
-    private List<Product> products;
+    private List<InvoiceProduct> products;
 
-    public static Invoice createNew(String id, Customer customer, List<Product> products)
+    public static Invoice createNew(Long id, Customer customer, List<InvoiceProduct> products)
     {
         return new Invoice(id, customer, products);
     }
