@@ -23,10 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,6 +35,7 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
 
     private final ProductMapper productMapper;
     private final CustomerMapper customerMapper;
+    private final InvoiceProductMapper invoiceProductMapper;
 
     public PaginationResult<Invoice> findAll(Pageable pageable) {
         Page<InvoiceEntity> invoiceEntities = this.jpaRepository.findAll(pageable);
@@ -47,24 +45,7 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         for (InvoiceEntity invoiceEntity : invoiceEntities.getContent()) {
             List<InvoiceProduct> products = invoiceEntity.getInvoiceProducts()
                     .stream()
-                    .map(invoiceProductEntity -> {
-                        ProductEntity productEntity = invoiceProductEntity.getProduct();
-                        if (productEntity != null) {
-                            return InvoiceProduct.fromPredefinedProduct(
-                                    invoiceProductEntity.getId(),
-                                    productMapper.toProduct(productEntity)
-                            );
-                        } else {
-                            return InvoiceProduct.fromCustomProduct(
-                                    invoiceProductEntity.getId(),
-                                    invoiceProductEntity.getCustomName(),
-                                    invoiceProductEntity.getCustomDescription(),
-                                    invoiceProductEntity.getCustomPrice(),
-                                    invoiceProductEntity.getCustomPriceTax(),
-                                    invoiceProductEntity.getCustomTaxAmount()
-                            );
-                        }
-                    })
+                    .map(invoiceProductMapper::toInvoiceProduct)
                     .toList();
 
             invoices.add(
@@ -77,6 +58,31 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         }
 
         return new PaginationResult<>(invoices, invoiceEntities.getTotalPages(), invoiceEntities.getTotalElements(), pageable.getPageSize(), pageable.getPageNumber());
+    }
+
+    public List<InvoiceProduct> getProductsForInvoice(InvoiceEntity invoiceEntity) {
+        List<InvoiceProduct> products = new ArrayList<>();
+
+        for (InvoiceProductEntity invoiceProductEntity : invoiceEntity.getInvoiceProducts()) {
+            ProductEntity productEntity = invoiceProductEntity.getProduct();
+            if (productEntity != null) {
+                products.add(InvoiceProduct.fromPredefinedProduct(
+                        invoiceProductEntity.getId(),
+                        productMapper.toProduct(productEntity)
+                ));
+            } else {
+                products.add(InvoiceProduct.fromCustomProduct(
+                        invoiceProductEntity.getId(),
+                        invoiceProductEntity.getCustomName(),
+                        invoiceProductEntity.getCustomDescription(),
+                        invoiceProductEntity.getCustomPrice(),
+                        invoiceProductEntity.getCustomPriceTax(),
+                        invoiceProductEntity.getCustomTaxAmount()
+                ));
+            }
+        }
+
+        return products;
     }
 
     public void save(CreateUpdateInvoiceRequest request) {
